@@ -9,37 +9,74 @@ class MyApp extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         final currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
           FocusManager.instance.primaryFocus?.unfocus();
         }
       },
-      child: MultiProvider(
-        providers: appProviders,
-        child: Consumer<ThemeViewModel>(
-          builder: (context, themeVM, _) {
-            return MaterialApp(
-              title: AppConfig.appName,
-              debugShowCheckedModeBanner: false,
-              theme: AppTheme.lightTheme,
-              darkTheme: AppTheme.darkTheme,
-              themeMode: themeVM.theme,
-              navigatorKey: AppRouter.navigatorKey,
-              navigatorObservers: [AppRouter.observer],
-              initialRoute: Routes.initial,
-              onGenerateRoute: AppRouter.onGenerateRoute,
-              builder: (context, child) {
-                return Overlay(
-                  initialEntries: [
-                    OverlayEntry(
-                      builder: (_) => OverlayPortal(controller: GlobalOverlay.instance.controller, overlayChildBuilder: (_) => const GlobalOverlayWidget(), child: child ?? const SizedBox.shrink()),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        ),
+      child: Consumer<ThemeViewModel>(
+        builder: (context, themeVM, _) {
+          return MaterialApp(
+            title: AppConfig.appName,
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: themeVM.theme,
+            navigatorKey: AppRouter.navigatorKey,
+            navigatorObservers: [AppRouter.observer],
+            initialRoute: Routes.initial,
+            onGenerateRoute: AppRouter.onGenerateRoute,
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: MediaQuery.of(context).textScaler.clamp(
+                  minScaleFactor: 0.7,
+                  maxScaleFactor: 1.4,
+                ),
+              ),
+              child: _AppBuilder(child: child),
+            ),
+          );
+        },
       ),
+    );
+  }
+}
+
+class _AppBuilder extends StatefulWidget {
+  const _AppBuilder({required this.child});
+  final Widget? child;
+
+  @override
+  State<_AppBuilder> createState() => _AppBuilderState();
+}
+
+class _AppBuilderState extends State<_AppBuilder> {
+  late final DeepLinkService _deepLink = locator<DeepLinkService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _deepLink.initialize();
+  }
+
+  @override
+  void dispose() {
+    _deepLink.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Overlay(
+      initialEntries: [
+        OverlayEntry(
+          builder: (_) => OverlayPortal(
+            controller: GlobalOverlay.instance.controller,
+            overlayChildBuilder: (_) => const GlobalOverlayWidget(),
+            child: widget.child ?? const SizedBox.shrink(),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -27,7 +27,7 @@ Future<void> registerApp() async {
   // locator.registerLazySingleton(() => AuthApi(locator<BaseApiService>()));
 
   // ── App services ────────────────────────────────────────
-  // locator.registerLazySingleton<StorageService>(() => StorageService());
+  locator.registerLazySingleton<DeepLinkService>(() => DeepLinkServiceImpl());
 
   // ── View models are NOT registered here ─────────────────
   // Create them per-screen via CoreView:

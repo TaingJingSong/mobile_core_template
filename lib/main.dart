@@ -1,8 +1,13 @@
 import 'package:app_base/register.dart';
 import 'main_app.dart';
 
-void main() async {
-  FlavorConfig.setEnvironment(Environment.prod);
-  await bootstrap();
-  runApp(const MyApp());
+Future<void> main() async {
+  await bootstrap(
+    env: Environment.prod,
+    providers: appProviders,
+    app: const MyApp(),
+    tasks: const [
+      // Add production startup tasks here
+    ],
+  );
 }

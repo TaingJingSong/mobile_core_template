@@ -29,3 +29,6 @@ export 'routing/navigator_keys.dart';
 export 'theme/theme.dart';
 export 'translation/translation.dart';
 export 'widgets/widgets.dart';
+
+export 'app/app.dart';
+export 'services/deep_link_service.dart';

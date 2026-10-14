@@ -1,9 +1,5 @@
 library;
 
-import 'package:flutter/widgets.dart';
-import 'core/di/register_core.dart';
-import 'core/di/register_app.dart';
-
 // ── Flutter / packages ──────────────────────────────────────
 export 'package:flutter/material.dart';
 export 'package:flutter/services.dart';
@@ -41,9 +37,3 @@ export 'app_providers.dart';
 // ── Routes & Widgets ────────────────────────────────────────
 export 'routes/routes.dart';
 export 'widgets/widget.dart';
-
-Future<void> bootstrap() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await registerCore();
-  await registerApp();
-}
