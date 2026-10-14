@@ -4,6 +4,34 @@ A production foundation for mobile applications built with Flutter. This reposit
 
 ---
 
+## Why This Exists
+
+Project setup and framework plumbing are often the most repeated, error-prone parts of starting a new Flutter codebase. Teams repeatedly re-implement networking clients, error mapping, environment flavors, dependency wiring, and CI pipelines, often with subtle discrepancies across repositories.
+
+This template packages the foundational 20% of code that is identical across production mobile apps into a **sealed core** (`lib/core/`). Feature development is contained strictly in `lib/modules/`, allowing the shared framework to receive bugfixes, optimizations, and security patches over time without merge conflicts.
+
+### Who This Is For
+
+- **Multi-app engineering teams**: Ideal for organizations maintaining multiple Flutter applications that share core network, error-handling, theming, and architectural standards.
+- **Production-grade mobile apps**: Engineered for applications requiring typed flavor configurations (`dev`, `qas`, `pre`, `prod`), clean test boundaries, and reproducible CI/CD pipelines.
+
+*Note: For single-developer, one-off proof-of-concept projects, this architecture may introduce more structure and layering than necessary.*
+
+### Scope: What Is and Isn't Included
+
+| In the Box | Not in the Box |
+|---|---|
+| Sealed core architecture (`lib/core/`) | App-specific business screens or UI flows |
+| 4-flavor runtime bootstrap engine (`bootstrap.dart`) | Third-party analytics SDK credentials |
+| Screen-scoped ViewModel lifecycle (`CoreView<T>`) | Payment gateway integrations |
+| Clean error hierarchy (`Failure`, `AppException`, `ErrorHandler`) | Custom backend business logic / authentication APIs |
+| Automated project initialization (`new_project.sh`) | Proprietary design systems / custom brand icon fonts |
+| Manifest-based core sync script (`sync_template.sh`) | Firebase project configurations (drop-in ready) |
+| Feature module generator (`add_module.sh`) | Release keystores and signing certificates |
+| 5 pre-configured GitHub Actions workflows | |
+
+---
+
 ## Table of Contents
 
 - [Architectural Overview](#architectural-overview)
@@ -61,12 +89,14 @@ This boundary ensures that bug fixes and structural enhancements made to `lib/co
 │  - lib/configs/networks      ││  - lib/core/errors          │
 │  - lib/configs/app_configs   ││  - lib/core/theme           │
 │  - lib/routes/app_router     ││  - lib/core/widgets         │
+│  - lib/core/di/register_app  ││  - lib/core/services        │
 └──────────────────────────────┘└─────────────────────────────┘
 ```
 
-- **`lib/core/base/`**: Generic `BaseViewModel` and `CoreView` widgets. Provides lifecycle hooks (`onInit`, `dispose`), transient dependency binding, and error observation.
+- **`lib/core/base/`**: Abstract `CoreViewModel` and `CoreView` widget primitives. Manages screen-scoped lifecycle hooks (`initModel`, `onDispose`), transient loader bindings, and notification dispatching.
 - **`lib/core/network/`**: Protocol interfaces (`BaseApiService`, `HttpConfig`, `HeaderProvider`, `NetworkInfo`) and domain failure representations (`Failure`, `AppException`).
 - **`lib/core/theme/`**: Theme resolution abstractions (`CoreColors`, `CoreTheme`, `AppColorsExtension`) separating semantic color tokens from brand palettes.
+- **`lib/core/services/`**: Generic contracts for cross-cutting services (e.g. `DeepLinkService`). Implementations reside in `lib/configs/` or `lib/data/`.
 - **`lib/core/app/bootstrap.dart`**: Unified startup engine providing zoned error capture, asynchronous pre-flight checks, and DI bootstrapping.
 - **`lib/configs/`**: Project implementation of themes, translations, network clients, and flavor configurations.
 
@@ -109,12 +139,12 @@ This template decouples state management from UI layout:
 │   │   ├── mixins/                 # AutoDispose, LoadingController, NetworkAware
 │   │   ├── network/                # Abstract network interfaces and contracts
 │   │   ├── routing/                # Navigation logger and root navigator keys
-│   │   ├── services/               # Deep linking contracts
+│   │   ├── services/               # Cross-cutting service contracts
 │   │   ├── theme/                  # Semantic colors and theme extensions
 │   │   ├── translation/            # Core translation key contracts
 │   │   └── widgets/                # Core widgets: Gap, AppButton, CoreText, states
 │   ├── data/                       # App singletons (GlobalOverlay, UserSingleton)
-│   ├── modules/                    # Feature modules (auth, profile, dashboard, etc.)
+│   ├── modules/                    # Feature modules (empty in fresh projects; populated via add_module.sh)
 │   ├── routes/                     # AppRouter, AppRoutes, and route generator
 │   ├── app_providers.dart          # Root providers (minimal global scope)
 │   ├── main.dart                   # Production entry point
@@ -143,7 +173,7 @@ This template decouples state management from UI layout:
 
 Ensure the following tools are available in your path:
 
-- Flutter SDK (stable channel, version 3.16 or higher)
+- Flutter SDK (stable channel, 3.24 or higher recommended)
 - Dart SDK (version 3.2 or higher)
 - Perl 5 (standard on macOS and Linux distributions)
 - Git (version 2.20 or higher)
@@ -226,7 +256,9 @@ Execute the local verification pipeline:
 ./scripts/ci_local.sh --fast
 ```
 
-When this command passes with zero warnings or errors, your new project is fully initialized and ready for development.
+When formatting, analysis, and test suites pass with zero warnings or errors, your project is initialized.
+
+> **Next Configuration Steps**: If your application utilizes Firebase or requires release code signing configurations, complete Phase 3 (Firebase) and Phase 4 (Signing) of [`NEW_PROJECT.md`](./NEW_PROJECT.md) before developing feature modules.
 
 ---
 
@@ -271,7 +303,7 @@ lib/modules/customer_profile/
 
 #### Writing the ViewModel
 
-Extend `CoreViewModel` to take advantage of lifecycle handling, busy state management, and toast notifications:
+Extend `CoreViewModel` to take advantage of lifecycle handling, busy state management, and error mapping:
 
 ```dart
 import 'package:enterprise_hr/register.dart';
@@ -283,9 +315,10 @@ class CustomerProfileViewModel extends CoreViewModel {
   final CustomerProfileRepository _repository;
   CustomerProfileModel? profile;
 
+  /// Called once by CoreView after the widget is mounted in the tree.
   @override
-  void onInit() {
-    super.onInit();
+  void initModel() {
+    super.initModel();
     loadProfile();
   }
 
@@ -295,7 +328,8 @@ class CustomerProfileViewModel extends CoreViewModel {
       profile = await _repository.fetchProfile();
       notifyListeners();
     } catch (e) {
-      setError(e.toString());
+      final failure = ErrorHandler.map(e);
+      locator<ToastBinding>().error(failure.message);
     } finally {
       setBusy(false);
     }
@@ -320,7 +354,8 @@ class CustomerProfileView extends StatelessWidget {
     return CoreView<CustomerProfileViewModel>(
       model: CustomerProfileViewModel(locator<CustomerProfileRepository>()),
       builder: (context, vm, child) {
-        if (vm.isBusy) {
+        // CoreView automatically triggers this builder whenever notifyListeners() is called.
+        if (vm.busy) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
         return Scaffold(
@@ -344,7 +379,7 @@ locator.registerLazySingleton<CustomerProfileRepository>(
 );
 ```
 
-> **Note**: Core services (`LoggerBinding`, `LoaderBinding`, `BaseApiService`, `HttpConfig`) are registered automatically inside `lib/core/di/register_core.dart`. Do not duplicate them in `register_app.dart`.
+> **Note on Registration Scope**: Concrete bindings (`LoggerBinding`, `LoaderBinding`, `ToastBinding`), the network client (`BaseApiService`), and the theme repository (`ThemeRepository`) are registered in `lib/core/di/register_app.dart` alongside project-specific repositories. In contrast, `lib/core/di/register_core.dart` is reserved for framework-agnostic services and remains sealed.
 
 ### Configuring Navigation
 
@@ -355,6 +390,7 @@ abstract class Routes {
   const Routes();
 
   static const initial = '/';
+  static const home = '/home';
   static const customerProfile = '/customer-profile';
 }
 ```
@@ -379,6 +415,8 @@ static Route<dynamic> onGenerateRoute(RouteSettings settings) {
   }
 }
 ```
+
+> **Routing Note**: The template provides a native `onGenerateRoute` setup via `AppRouter` by default to avoid mandatory third-party routing dependencies. If your application requires URL-based deep linking on the web or declarative branch routing (such as `go_router`), you can replace `onGenerateRoute` in `lib/main_app.dart` with `MaterialApp.router` without altering any feature modules.
 
 ---
 
@@ -450,10 +488,11 @@ When committing improvements to `lib/core/` in the template repository:
    git add .
    git commit -m "fix(core): ensure BaseViewModel cancels active streams on dispose"
    git tag -a v1.0.1 -m "Release v1.0.1"
-   git push origin main --tags
+   git push origin main
+   git push origin v1.0.1
    ```
 
-Downstream projects can now pull the fix by running `./scripts/sync_template.sh`.
+Pushing an annotated release tag (`v*.*.*`) automatically triggers `.github/workflows/release.yml`, building production artifacts. Downstream projects can subsequently pull the updates by running `./scripts/sync_template.sh`.
 
 ---
 
