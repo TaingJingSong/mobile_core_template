@@ -4,13 +4,7 @@
 /// Typed container for a single flavor's values. One instance
 /// per environment. No magic strings, no null casts.
 class FlavorValues {
-  const FlavorValues({
-    required this.name,
-    required this.url,
-    required this.firebaseRoot,
-    required this.distance,
-    this.socketUrl,
-  });
+  const FlavorValues({required this.name, required this.url, required this.firebaseRoot, required this.distance, this.socketUrl});
 
   /// Short name, e.g. 'dev', 'qas', 'pre', ''.
   final String name;

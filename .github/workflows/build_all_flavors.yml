@@ -1,0 +1,47 @@
+name: Build all flavors
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
+
+jobs:
+  build:
+    name: Build ${{ matrix.flavor.name }} APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor:
+          - { name: dev,  target: lib/main_dev.dart }
+          - { name: qas,  target: lib/main_qas.dart }
+          - { name: pre,  target: lib/main_pre.dart }
+          - { name: prod, target: lib/main.dart }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build ${{ matrix.flavor.name }} APK
+        run: flutter build apk --debug -t ${{ matrix.flavor.target }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ matrix.flavor.name }}
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 7

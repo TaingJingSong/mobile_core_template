@@ -9,8 +9,7 @@ class MyApp extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         final currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus &&
-            currentFocus.focusedChild != null) {
+        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
           FocusManager.instance.primaryFocus?.unfocus();
         }
       },
@@ -27,12 +26,7 @@ class MyApp extends StatelessWidget {
             initialRoute: Routes.initial,
             onGenerateRoute: AppRouter.onGenerateRoute,
             builder: (context, child) => MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                textScaler: MediaQuery.of(context).textScaler.clamp(
-                  minScaleFactor: 0.7,
-                  maxScaleFactor: 1.4,
-                ),
-              ),
+              data: MediaQuery.of(context).copyWith(textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 0.7, maxScaleFactor: 1.4)),
               child: _AppBuilder(child: child),
             ),
           );
@@ -70,11 +64,7 @@ class _AppBuilderState extends State<_AppBuilder> {
     return Overlay(
       initialEntries: [
         OverlayEntry(
-          builder: (_) => OverlayPortal(
-            controller: GlobalOverlay.instance.controller,
-            overlayChildBuilder: (_) => const GlobalOverlayWidget(),
-            child: widget.child ?? const SizedBox.shrink(),
-          ),
+          builder: (_) => OverlayPortal(controller: GlobalOverlay.instance.controller, overlayChildBuilder: (_) => const GlobalOverlayWidget(), child: widget.child ?? const SizedBox.shrink()),
         ),
       ],
     );

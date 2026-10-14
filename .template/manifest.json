@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "sealed_at": "2026-10-14T07:28:33Z",
+  "sealed_at": "2026-10-14T08:24:30Z",
   "files": {
     "lib/core/base/base_view_model.dart": "6080233adcfe3ce2d7d83bfc0b731ecacf3083745217fb249d8ba7c350d8bd66",
     "lib/core/base/base_view.dart": "61097617adb6006527922d6a2ea4ddb64d3b4d235c66653507cd6e76abc5a784",
@@ -38,12 +38,15 @@
     "lib/core/widgets/widgets.dart": "269fa499a7e9a7d493db86c49405f806abeb035ba081ef8719cc7cf1a2bc6266",
     "lib/core/di/locator.dart": "6ee6f192e442d16fd39310d8e53aad50b6db2b8a633767f3410f8a23512044e4",
     "lib/core/di/register_core.dart": "3e547c1d7085504841fcc343a61254f639acfa7430c2d396390eea29216f4250",
-    "lib/core/app/bootstrap.dart": "3aacddaaa18689a04835be1cf3e5cfe4fb4038b69dc4f42268d4b5588ff86501",
+    "lib/core/app/bootstrap.dart": "c52e5bc7e44d340464e0b2a0beb355dcddca709802638a8a1c5eaef7d01c4f49",
     "lib/core/core.dart": "70631fbbdad1457b4146e955d1efde0d5a5ee1f1c85d8cdbb6760a4610b14983",
     "scripts/add_module.sh": "997bec6bdc098bf3243ac879e0671ae585b18e13d2fe971a5ff5e610ed8ac5a7",
     "scripts/build_manifest.sh": "44379e5ef81506b6c718b40bd698d949942221f284e8537d03d1b3179e0b52a6",
+    "scripts/check_template_drift.sh": "37bf97420a6faa06712eae808b7165275b9f6edbef6068cc83df6544b7a50c73",
+    "scripts/ci_local.sh": "ca05109b6fb4a6c84bb14a306e4c91eb82ca34775b677b4dc432e40506963eea",
+    "scripts/install_hooks.sh": "03a5e8ddb97ca0b234d74ef2fe7fa0687d59103c08309393150b7ffc8cb4cd4c",
     "scripts/new_project.sh": "e1cd25e47600981a70e939baa8369759ee0c792af84095b26d355ca974c527ec",
     "scripts/sync_template.sh": "9e00cb68e1c9046a4d260ea4b83c1d83f7c12b17dd574b6b51a5701103ccf63d",
-    "NEW_PROJECT.md": "087a6d37c012b0a3a378f5a5cfa4c2e05cb4e01d05c428236113d8711d75374c"
+    "NEW_PROJECT.md": "74f6af6b5cf0d0b5c21b4332b7f0ea1fd5cbaebfc572e287ee0c37b905f27abb"
   }
 }

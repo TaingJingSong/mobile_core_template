@@ -1,0 +1,82 @@
+name: Template drift
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # Mondays 09:00 UTC
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Check template version
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read current template version
+        id: current
+        run: |
+          VERSION=$(grep -o '"version": *"[^"]*"' .template/manifest.json \
+            | sed 's/.*"\(.*\)"/\1/')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch latest template version
+        id: latest
+        env:
+          TEMPLATE_REPO: ${{ vars.TEMPLATE_REPO }}
+        run: |
+          git clone --quiet --depth 1 "$TEMPLATE_REPO" /tmp/template
+          VERSION=$(cat /tmp/template/.template-version)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Compare
+        id: compare
+        run: |
+          CURRENT="${{ steps.current.outputs.version }}"
+          LATEST="${{ steps.latest.outputs.version }}"
+          if [[ "$CURRENT" != "$LATEST" ]]; then
+            echo "behind=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "behind=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open issue if behind
+        if: steps.compare.outputs.behind == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const current = '${{ steps.current.outputs.version }}';
+            const latest = '${{ steps.latest.outputs.version }}';
+            const title = `Template update available: ${current} → ${latest}`;
+            const body = [
+              `The mobile template has been updated.`,
+              ``,
+              `- **Current:** \`${current}\``,
+              `- **Latest:** \`${latest}\``,
+              ``,
+              `To sync, run from the project root:`,
+              ``,
+              '```bash',
+              `./scripts/sync_template.sh`,
+              '```',
+              ``,
+              `Then resolve any conflicts and open a PR.`,
+            ].join('\n');
+
+            // Don't duplicate if an issue already exists.
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'template-drift',
+            });
+            if (issues.some(i => i.title === title)) return;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['template-drift'],
+            });

@@ -339,6 +339,59 @@ flutter run -t lib/main.dart          # prod
 
 ---
 
+## Phase 6.5 — CI/CD Setup
+
+### 6.5.1 Enable workflows
+
+The `.github/workflows/` folder is already in place. Push the repo to GitHub and the workflows activate.
+
+### 6.5.2 Configure repository secrets (for releases)
+
+Only needed if you plan to ship via GitHub Releases:
+
+**Settings → Secrets and variables → Actions → New repository secret:**
+
+| Secret | Value |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | `base64 -w0 upload-keystore.jks` output |
+| `ANDROID_KEY_ALIAS` | `upload` |
+| `ANDROID_KEY_PASSWORD` | your key password |
+| `ANDROID_STORE_PASSWORD` | your keystore password |
+
+### 6.5.3 Configure repository variables
+
+**Settings → Secrets and variables → Actions → Variables:**
+
+| Variable | Value |
+|---|---|
+| `TEMPLATE_REPO` | URL of the template repo (used by drift check) |
+
+### 6.5.4 Create the `template-drift` label
+
+**Issues → Labels → New label:**
+
+- Name: `template-drift`
+- Color: `#FBCA04`
+
+### 6.5.5 Verify CI runs
+
+Push an empty commit and confirm the CI workflow passes:
+
+```bash
+git commit --allow-empty -m "Trigger CI"
+git push
+```
+
+### 6.5.6 Local pre-commit hook (optional)
+
+```bash
+./scripts/install_hooks.sh
+```
+
+Bypass with `git commit --no-verify`.
+
+---
+
 ## Phase 6 — Build Your First Feature
 
 Follow this pattern for **every** feature:

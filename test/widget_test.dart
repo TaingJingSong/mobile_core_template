@@ -9,12 +9,7 @@ void main() {
   });
 
   testWidgets('App smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: appProviders,
-        child: const MyApp(),
-      ),
-    );
+    await tester.pumpWidget(MultiProvider(providers: appProviders, child: const MyApp()));
     await tester.pumpAndSettle();
 
     expect(find.text('Home View'), findsOneWidget);

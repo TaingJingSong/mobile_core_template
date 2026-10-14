@@ -22,12 +22,7 @@ class BootstrapTask {
 ///   4. Register app DI
 ///   5. Run flavor-specific tasks
 ///   6. Launch the app
-Future<void> bootstrap({
-  required Environment env,
-  required List<SingleChildWidget> providers,
-  required Widget app,
-  List<BootstrapTask> tasks = const [],
-}) async {
+Future<void> bootstrap({required Environment env, required List<SingleChildWidget> providers, required Widget app, List<BootstrapTask> tasks = const []}) async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
