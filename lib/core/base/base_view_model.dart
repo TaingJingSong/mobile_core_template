@@ -20,7 +20,6 @@ import '../mixins/auto_dispose_mixin.dart';
 /// If you need to make the template use Bloc or Riverpod later,
 /// this is the only class you replace.
 abstract class CoreViewModel extends ChangeNotifier with LoadingControllerMixin, AutoDisposeMixin {
-
   bool _initialized = false;
   bool get isInit => _initialized;
 

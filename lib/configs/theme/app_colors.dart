@@ -13,12 +13,21 @@ abstract class AppColor {
   static const Color textSecondary = Color(0xFF6D6D6D);
   static const Color textPlaceholder = Color(0xFF616161);
 
+  static const Color whiteColor = Color(0xFFFFFFFF);
+  static const Color blackColor = Color(0xFF000000);
+  static const Color greyColor = Color(0xFF888888);
+  static const Color lightGrey = Color(0xFFF6F6F6);
+  static const Color darkGrey = Color(0xFF6D6D6D);
+
   static const Color success = Color(0xFF24C759);
+  static const Color sucess = Color(0xFF24C759);
   static const Color error = Color(0xFFFF3B30);
   static const Color warning = Color(0xFFFF9500);
+  static const Color warningColor = Color(0xFFFF9500);
   static const Color info = Color(0xFF007AFF);
 
   static const Color divider = Color(0xFFE7E7E7);
   static const Color border = Color(0xFFD1D1D1);
   static const Color disabled = Colors.grey;
+  static const Color disableColor = Colors.grey;
 }

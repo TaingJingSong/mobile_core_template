@@ -11,13 +11,9 @@ import 'toast_binding.dart';
 
 enum CoreViewMode { reactive, stateless, selective }
 
-typedef CoreViewBuilder<T> = Widget Function(
-  BuildContext context, T model, Widget? child,
-);
+typedef CoreViewBuilder<T> = Widget Function(BuildContext context, T model, Widget? child);
 
-typedef CoreViewErrorBuilder = Widget Function(
-  BuildContext context, Object error, StackTrace? stackTrace,
-);
+typedef CoreViewErrorBuilder = Widget Function(BuildContext context, Object error, StackTrace? stackTrace);
 
 /// ════════════════════════════════════════════════════════════
 /// CORE VIEW
@@ -63,33 +59,11 @@ class CoreView<T extends ChangeNotifier> extends StatefulWidget {
     this.networkInfo,
     this.errorBuilder,
     this.selectorValue,
-  })  : assert(
-          !autoReloadOnReconnect || networkInfo != null,
-          'autoReloadOnReconnect = true requires a non-null networkInfo.',
-        ),
-        assert(
-          selectorValue == null || mode == CoreViewMode.selective,
-          'selectorValue is only supported with CoreViewMode.selective.',
-        );
+  }) : assert(!autoReloadOnReconnect || networkInfo != null, 'autoReloadOnReconnect = true requires a non-null networkInfo.'),
+       assert(selectorValue == null || mode == CoreViewMode.selective, 'selectorValue is only supported with CoreViewMode.selective.');
 
-  const CoreView.stateless({
-    Key? key,
-    required CoreViewBuilder<T> builder,
-    required T model,
-    void Function(T)? onModelReady,
-    void Function(T)? onDispose,
-    void Function(T)? onClose,
-    CoreViewErrorBuilder? errorBuilder,
-  }) : this(
-          key: key,
-          mode: CoreViewMode.stateless,
-          builder: builder,
-          model: model,
-          onModelReady: onModelReady,
-          onDispose: onDispose,
-          onClose: onClose,
-          errorBuilder: errorBuilder,
-        );
+  const CoreView.stateless({Key? key, required CoreViewBuilder<T> builder, required T model, void Function(T)? onModelReady, void Function(T)? onDispose, void Function(T)? onClose, CoreViewErrorBuilder? errorBuilder})
+    : this(key: key, mode: CoreViewMode.stateless, builder: builder, model: model, onModelReady: onModelReady, onDispose: onDispose, onClose: onClose, errorBuilder: errorBuilder);
 
   const CoreView.selective({
     Key? key,
@@ -102,19 +76,7 @@ class CoreView<T extends ChangeNotifier> extends StatefulWidget {
     void Function(T, T)? onModelChanged,
     Object? Function(T)? selectorValue,
     CoreViewErrorBuilder? errorBuilder,
-  }) : this(
-          key: key,
-          mode: CoreViewMode.selective,
-          builder: builder,
-          model: model,
-          child: child,
-          onModelReady: onModelReady,
-          onDispose: onDispose,
-          onClose: onClose,
-          onModelChanged: onModelChanged,
-          selectorValue: selectorValue,
-          errorBuilder: errorBuilder,
-        );
+  }) : this(key: key, mode: CoreViewMode.selective, builder: builder, model: model, child: child, onModelReady: onModelReady, onDispose: onDispose, onClose: onClose, onModelChanged: onModelChanged, selectorValue: selectorValue, errorBuilder: errorBuilder);
 
   @override
   State<CoreView<T>> createState() => _CoreViewState<T>();
@@ -155,10 +117,7 @@ class _CoreViewState<T extends ChangeNotifier> extends State<CoreView<T>> {
     try {
       // Network binding
       if (model is NetworkAwareMixin && widget.networkInfo != null) {
-        model.setupNetwork(
-          networkInfo: widget.networkInfo!,
-          autoReloadOnReconnect: widget.autoReloadOnReconnect,
-        );
+        model.setupNetwork(networkInfo: widget.networkInfo!, autoReloadOnReconnect: widget.autoReloadOnReconnect);
       }
 
       // Loader binding — pulls from DI, no GlobalOverlay reference
@@ -209,36 +168,22 @@ class _CoreViewState<T extends ChangeNotifier> extends State<CoreView<T>> {
     final content = _buildContent();
     if (widget.shareState) return content;
 
-    return ChangeNotifierProvider<T>.value(
-      value: _model,
-      child: content,
-    );
+    return ChangeNotifierProvider<T>.value(value: _model, child: content);
   }
 
   Widget _buildContent() {
     switch (widget.mode) {
       case CoreViewMode.stateless:
-        return Builder(
-          builder: (ctx) => widget.builder(ctx, _model, widget.child),
-        );
+        return Builder(builder: (ctx) => widget.builder(ctx, _model, widget.child));
 
       case CoreViewMode.selective:
         if (widget.selectorValue != null) {
-          return Selector<T, Object?>(
-            selector: (_, m) => widget.selectorValue!(m),
-            builder: (ctx, _, child) => widget.builder(ctx, _model, child),
-            child: widget.child,
-          );
+          return Selector<T, Object?>(selector: (_, m) => widget.selectorValue!(m), builder: (ctx, _, child) => widget.builder(ctx, _model, child), child: widget.child);
         }
-        return Builder(
-          builder: (ctx) => widget.builder(ctx, _model, widget.child),
-        );
+        return Builder(builder: (ctx) => widget.builder(ctx, _model, widget.child));
 
       case CoreViewMode.reactive:
-        return Consumer<T>(
-          builder: widget.builder,
-          child: widget.child,
-        );
+        return Consumer<T>(builder: widget.builder, child: widget.child);
     }
   }
 }

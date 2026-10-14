@@ -6,12 +6,7 @@ class AppErrorWidget extends StatelessWidget {
   final VoidCallback? onRetry;
   final String retryText;
 
-  const AppErrorWidget({
-    super.key,
-    required this.message,
-    this.onRetry,
-    this.retryText = 'Retry',
-  });
+  const AppErrorWidget({super.key, required this.message, this.onRetry, this.retryText = 'Retry'});
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +19,8 @@ class AppErrorWidget extends StatelessWidget {
           children: [
             Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
             const SizedBox(height: 16),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium,
-            ),
-            if (onRetry != null) ...[
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: onRetry,
-                child: Text(retryText),
-              ),
-            ],
+            Text(message, textAlign: TextAlign.center, style: theme.textTheme.bodyMedium),
+            if (onRetry != null) ...[const SizedBox(height: 16), ElevatedButton(onPressed: onRetry, child: Text(retryText))],
           ],
         ),
       ),

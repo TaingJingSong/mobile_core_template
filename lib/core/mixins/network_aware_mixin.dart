@@ -11,10 +11,7 @@ mixin NetworkAwareMixin on ChangeNotifier {
 
   bool get isOffline => _isOffline;
 
-  Future<void> setupNetwork({
-    required NetworkInfo networkInfo,
-    bool autoReloadOnReconnect = false,
-  }) async {
+  Future<void> setupNetwork({required NetworkInfo networkInfo, bool autoReloadOnReconnect = false}) async {
     _networkInfo = networkInfo;
 
     final connected = await _networkInfo!.isConnected;

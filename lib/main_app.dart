@@ -9,34 +9,36 @@ class MyApp extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         final currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus &&
-            currentFocus.focusedChild != null) {
+        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
           FocusManager.instance.primaryFocus?.unfocus();
         }
       },
-      child: MaterialApp(
-        title: AppConfig.appName,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        navigatorKey: AppRouter.navigatorKey,
-        navigatorObservers: [AppRouter.observer],
-        initialRoute: Routes.initial,
-        onGenerateRoute: AppRouter.onGenerateRoute,
-        builder: (context, child) {
-          return Overlay(
-            initialEntries: [
-              OverlayEntry(
-                builder: (_) => OverlayPortal(
-                  controller: GlobalOverlay.instance.controller,
-                  overlayChildBuilder: (_) => const GlobalOverlayWidget(),
-                  child: child ?? const SizedBox.shrink(),
-                ),
-              ),
-            ],
-          );
-        },
+      child: MultiProvider(
+        providers: appProviders,
+        child: Consumer<ThemeViewModel>(
+          builder: (context, themeVM, _) {
+            return MaterialApp(
+              title: AppConfig.appName,
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: themeVM.theme,
+              navigatorKey: AppRouter.navigatorKey,
+              navigatorObservers: [AppRouter.observer],
+              initialRoute: Routes.initial,
+              onGenerateRoute: AppRouter.onGenerateRoute,
+              builder: (context, child) {
+                return Overlay(
+                  initialEntries: [
+                    OverlayEntry(
+                      builder: (_) => OverlayPortal(controller: GlobalOverlay.instance.controller, overlayChildBuilder: (_) => const GlobalOverlayWidget(), child: child ?? const SizedBox.shrink()),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

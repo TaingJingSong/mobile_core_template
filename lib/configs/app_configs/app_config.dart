@@ -1,5 +1,5 @@
 /// ### App Config — Edit Per Project
-/// 
+///
 /// This is the first file you touch when starting a new app.
 /// Keep it dumb: constants only, no logic, no imports.
 class AppConfig {

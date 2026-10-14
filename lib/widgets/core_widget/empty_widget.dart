@@ -6,12 +6,7 @@ class EmptyWidget extends StatelessWidget {
   final IconData icon;
   final Widget? action;
 
-  const EmptyWidget({
-    super.key,
-    this.message = 'No data available',
-    this.icon = Icons.inbox_outlined,
-    this.action,
-  });
+  const EmptyWidget({super.key, this.message = 'No data available', this.icon = Icons.inbox_outlined, this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +22,9 @@ class EmptyWidget extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.disabledColor,
-              ),
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.disabledColor),
             ),
-            if (action != null) ...[
-              const SizedBox(height: 16),
-              action!,
-            ],
+            if (action != null) ...[const SizedBox(height: 16), action!],
           ],
         ),
       ),

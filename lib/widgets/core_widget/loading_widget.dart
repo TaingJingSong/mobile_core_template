@@ -6,12 +6,7 @@ class LoadingWidget extends StatelessWidget {
   final Color? color;
   final String? message;
 
-  const LoadingWidget({
-    super.key,
-    this.size = 24.0,
-    this.color,
-    this.message,
-  });
+  const LoadingWidget({super.key, this.size = 24.0, this.color, this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -22,20 +17,9 @@ class LoadingWidget extends StatelessWidget {
           SizedBox(
             width: size,
             height: size,
-            child: CircularProgressIndicator(
-              strokeWidth: 2.5,
-              valueColor: color != null
-                  ? AlwaysStoppedAnimation<Color>(color!)
-                  : null,
-            ),
+            child: CircularProgressIndicator(strokeWidth: 2.5, valueColor: color != null ? AlwaysStoppedAnimation<Color>(color!) : null),
           ),
-          if (message != null) ...[
-            const SizedBox(height: 12),
-            Text(
-              message!,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
+          if (message != null) ...[const SizedBox(height: 12), Text(message!, style: Theme.of(context).textTheme.bodyMedium)],
         ],
       ),
     );

@@ -15,10 +15,7 @@ class GlobalOverlay {
       if (child != null) {
         this.child.value = child;
       } else if (text != null) {
-        this.child.value = Text(
-          text,
-          style: const TextStyle(fontSize: 16, color: Colors.white),
-        );
+        this.child.value = Text(text, style: const TextStyle(fontSize: 16, color: Colors.white));
       } else {
         this.child.value = null;
       }
@@ -40,12 +37,7 @@ class GlobalOverlay {
   void setLoadingText(String? text) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (activeType.value == OverlayType.loading) {
-        child.value = text != null
-            ? Text(
-                text,
-                style: const TextStyle(fontSize: 16, color: Colors.white),
-              )
-            : null;
+        child.value = text != null ? Text(text, style: const TextStyle(fontSize: 16, color: Colors.white)) : null;
       }
     });
   }
@@ -73,13 +65,7 @@ class _GlobalOverlayWidgetState extends State<GlobalOverlayWidget> with SingleTi
 
     _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeOut, reverseCurve: Curves.easeIn);
 
-    _scaleAnim = Tween<double>(begin: 0.7, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animController,
-        curve: Curves.easeOutBack,
-        reverseCurve: Curves.easeInCubic,
-      ),
-    );
+    _scaleAnim = Tween<double>(begin: 0.7, end: 1.0).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOutBack, reverseCurve: Curves.easeInCubic));
 
     GlobalOverlay.instance.activeType.addListener(_onActiveTypeChanged);
 
@@ -137,19 +123,12 @@ class _GlobalOverlayWidgetState extends State<GlobalOverlayWidget> with SingleTi
                         return Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const IgnorePointer(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 4,
-                              ),
-                            ),
+                            const IgnorePointer(child: CircularProgressIndicator(strokeWidth: 4)),
                             if (childWidget != null) ...[
                               const SizedBox(height: 16),
                               DefaultTextStyle(
                                 style: const TextStyle(color: Colors.white),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: childWidget,
-                                ),
+                                child: Material(color: Colors.transparent, child: childWidget),
                               ),
                             ],
                           ],

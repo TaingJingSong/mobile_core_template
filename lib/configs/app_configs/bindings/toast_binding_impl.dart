@@ -11,27 +11,21 @@ class AppToastBinding implements ToastBinding {
   @override
   void show(String message) {
     if (_context != null && _context!.mounted) {
-      ScaffoldMessenger.of(_context!).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(_context!).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
   @override
   void error(String message) {
     if (_context != null && _context!.mounted) {
-      ScaffoldMessenger.of(_context!).showSnackBar(
-        SnackBar(content: Text(message), backgroundColor: Colors.red),
-      );
+      ScaffoldMessenger.of(_context!).showSnackBar(SnackBar(content: Text(message), backgroundColor: Colors.red));
     }
   }
 
   @override
   void success(String message) {
     if (_context != null && _context!.mounted) {
-      ScaffoldMessenger.of(_context!).showSnackBar(
-        SnackBar(content: Text(message), backgroundColor: Colors.green),
-      );
+      ScaffoldMessenger.of(_context!).showSnackBar(SnackBar(content: Text(message), backgroundColor: Colors.green));
     }
   }
 }

@@ -16,89 +16,18 @@ abstract class CoreAPIBase {
   bool get isCustom;
 
   // Helpers so feature classes don't repeat the prefix.
-  Future<CustomResponse> get(
-    String path, {
-    Map<String, dynamic>? query,
-    bool enabledRetry = false,
-    bool isDebug = false,
-    bool isShowMsg = true,
-  }) =>
-      apiService.getResponse(
-        '$apiPrefix/$path',
-        query: query,
-        enabledRetry: enabledRetry,
-        isDebug: isDebug,
-        isShowMsg: isShowMsg,
-        customUrl: isCustom ? path : null,
-      );
+  Future<CustomResponse> get(String path, {Map<String, dynamic>? query, bool enabledRetry = false, bool isDebug = false, bool isShowMsg = true}) =>
+      apiService.getResponse('$apiPrefix/$path', query: query, enabledRetry: enabledRetry, isDebug: isDebug, isShowMsg: isShowMsg, customUrl: isCustom ? path : null);
 
-  Future<CustomResponse> post(
-    String path,
-    dynamic body, {
-    Map<String, dynamic>? query,
-    bool enabledRetry = false,
-    bool isDebug = false,
-    bool isShowMsg = true,
-  }) =>
-      apiService.postResponse(
-        '$apiPrefix/$path',
-        body,
-        query: query,
-        enabledRetry: enabledRetry,
-        isDebug: isDebug,
-        isShowMsg: isShowMsg,
-        customUrl: isCustom ? path : null,
-      );
+  Future<CustomResponse> post(String path, dynamic body, {Map<String, dynamic>? query, bool enabledRetry = false, bool isDebug = false, bool isShowMsg = true}) =>
+      apiService.postResponse('$apiPrefix/$path', body, query: query, enabledRetry: enabledRetry, isDebug: isDebug, isShowMsg: isShowMsg, customUrl: isCustom ? path : null);
 
-  Future<CustomResponse> put(
-    String path,
-    dynamic body, {
-    Map<String, dynamic>? query,
-    bool enabledRetry = false,
-    bool isDebug = false,
-    bool isShowMsg = true,
-  }) =>
-      apiService.putResponse(
-        '$apiPrefix/$path',
-        body,
-        query: query,
-        enabledRetry: enabledRetry,
-        isDebug: isDebug,
-        isShowMsg: isShowMsg,
-        customUrl: isCustom ? path : null,
-      );
+  Future<CustomResponse> put(String path, dynamic body, {Map<String, dynamic>? query, bool enabledRetry = false, bool isDebug = false, bool isShowMsg = true}) =>
+      apiService.putResponse('$apiPrefix/$path', body, query: query, enabledRetry: enabledRetry, isDebug: isDebug, isShowMsg: isShowMsg, customUrl: isCustom ? path : null);
 
-  Future<CustomResponse> delete(
-    String path,
-    dynamic body, {
-    Map<String, dynamic>? query,
-    bool enabledRetry = false,
-    bool isDebug = false,
-    bool isShowMsg = true,
-  }) =>
-      apiService.deleteResponse(
-        '$apiPrefix/$path',
-        body,
-        query: query,
-        enabledRetry: enabledRetry,
-        isDebug: isDebug,
-        isShowMsg: isShowMsg,
-        customUrl: isCustom ? path : null,
-      );
+  Future<CustomResponse> delete(String path, dynamic body, {Map<String, dynamic>? query, bool enabledRetry = false, bool isDebug = false, bool isShowMsg = true}) =>
+      apiService.deleteResponse('$apiPrefix/$path', body, query: query, enabledRetry: enabledRetry, isDebug: isDebug, isShowMsg: isShowMsg, customUrl: isCustom ? path : null);
 
-  Future<StreamResponse> getStream(
-    String path, {
-    Map<String, dynamic>? query,
-    bool enabledRetry = false,
-    bool isDebug = false,
-    bool isShowMsg = true,
-  }) =>
-      apiService.getStreamResponse(
-        '$apiPrefix/$path',
-        query: query,
-        enabledRetry: enabledRetry,
-        isDebug: isDebug,
-        isShowMsg: isShowMsg,
-        customUrl: isCustom ? path : null,
-      );
+  Future<StreamResponse> getStream(String path, {Map<String, dynamic>? query, bool enabledRetry = false, bool isDebug = false, bool isShowMsg = true}) =>
+      apiService.getStreamResponse('$apiPrefix/$path', query: query, enabledRetry: enabledRetry, isDebug: isDebug, isShowMsg: isShowMsg, customUrl: isCustom ? path : null);
 }

@@ -10,33 +10,17 @@ class AppButton extends StatelessWidget {
   final double height;
   final Widget? icon;
 
-  const AppButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.isLoading = false,
-    this.isOutlined = false,
-    this.width = double.infinity,
-    this.height = 48.0,
-    this.icon,
-  });
+  const AppButton({super.key, required this.text, required this.onPressed, this.isLoading = false, this.isOutlined = false, this.width = double.infinity, this.height = 48.0, this.icon});
 
   @override
   Widget build(BuildContext context) {
     final child = isLoading
-        ? const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          )
+        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
         : Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) ...[
-                icon!,
-                const SizedBox(width: 8),
-              ],
+              if (icon != null) ...[icon!, const SizedBox(width: 8)],
               Text(text),
             ],
           );
@@ -44,15 +28,7 @@ class AppButton extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: isOutlined
-          ? OutlinedButton(
-              onPressed: isLoading ? null : onPressed,
-              child: child,
-            )
-          : ElevatedButton(
-              onPressed: isLoading ? null : onPressed,
-              child: child,
-            ),
+      child: isOutlined ? OutlinedButton(onPressed: isLoading ? null : onPressed, child: child) : ElevatedButton(onPressed: isLoading ? null : onPressed, child: child),
     );
   }
 }
