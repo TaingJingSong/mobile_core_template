@@ -367,6 +367,14 @@ else
   warn "$REGISTER not found — skipping."
 fi
 
+# 2.7 Build initial template manifest
+step "Building initial template manifest"
+if [[ -x "scripts/build_manifest.sh" ]]; then
+  ./scripts/build_manifest.sh
+else
+  warn "scripts/build_manifest.sh not found — you'll need to run it later."
+fi
+
 # ────────────────────────────────────────────────────────────────
 # Verify
 # ────────────────────────────────────────────────────────────────
@@ -418,10 +426,20 @@ cat <<EOF
     • Scaffold features using:
         ./scripts/add_module.sh <feature_name>
 
+  ${DIM}Template:${RESET}
+    • Initial manifest written to .template/manifest.json
+    • Sync future updates with ./scripts/sync_template.sh
+
   ${DIM}Backups of edited files (delete when satisfied):${RESET}
     • lib/routes/app_router.dart.bak
     • lib/routes/app_routes.dart.bak
     • lib/core/di/register_app.dart.bak
 
 EOF
+
+printf '\n%s\n' "${BOLD}Template version pinned at:${RESET}"
+printf '  %s\n' "$(cat .template-version 2>/dev/null || echo '0.0.0')"
+printf '\n%s\n' "${DIM}To pull future core updates:${RESET}"
+printf '  %s\n' "./scripts/sync_template.sh"
+
 ok "Run './scripts/new_project.sh --help' for usage."

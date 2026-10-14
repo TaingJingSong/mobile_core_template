@@ -1,0 +1,3 @@
+# Keep .template directory in git
+!.gitignore
+!manifest.json
