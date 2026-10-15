@@ -62,8 +62,15 @@ class CoreView<T extends ChangeNotifier> extends StatefulWidget {
   }) : assert(!autoReloadOnReconnect || networkInfo != null, 'autoReloadOnReconnect = true requires a non-null networkInfo.'),
        assert(selectorValue == null || mode == CoreViewMode.selective, 'selectorValue is only supported with CoreViewMode.selective.');
 
-  const CoreView.stateless({Key? key, required CoreViewBuilder<T> builder, required T model, void Function(T)? onModelReady, void Function(T)? onDispose, void Function(T)? onClose, CoreViewErrorBuilder? errorBuilder})
-    : this(key: key, mode: CoreViewMode.stateless, builder: builder, model: model, onModelReady: onModelReady, onDispose: onDispose, onClose: onClose, errorBuilder: errorBuilder);
+  const CoreView.stateless({
+    Key? key,
+    required CoreViewBuilder<T> builder,
+    required T model,
+    void Function(T)? onModelReady,
+    void Function(T)? onDispose,
+    void Function(T)? onClose,
+    CoreViewErrorBuilder? errorBuilder,
+  }) : this(key: key, mode: CoreViewMode.stateless, builder: builder, model: model, onModelReady: onModelReady, onDispose: onDispose, onClose: onClose, errorBuilder: errorBuilder);
 
   const CoreView.selective({
     Key? key,
@@ -76,7 +83,19 @@ class CoreView<T extends ChangeNotifier> extends StatefulWidget {
     void Function(T, T)? onModelChanged,
     Object? Function(T)? selectorValue,
     CoreViewErrorBuilder? errorBuilder,
-  }) : this(key: key, mode: CoreViewMode.selective, builder: builder, model: model, child: child, onModelReady: onModelReady, onDispose: onDispose, onClose: onClose, onModelChanged: onModelChanged, selectorValue: selectorValue, errorBuilder: errorBuilder);
+  }) : this(
+         key: key,
+         mode: CoreViewMode.selective,
+         builder: builder,
+         model: model,
+         child: child,
+         onModelReady: onModelReady,
+         onDispose: onDispose,
+         onClose: onClose,
+         onModelChanged: onModelChanged,
+         selectorValue: selectorValue,
+         errorBuilder: errorBuilder,
+       );
 
   @override
   State<CoreView<T>> createState() => _CoreViewState<T>();

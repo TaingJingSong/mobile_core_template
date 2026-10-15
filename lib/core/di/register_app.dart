@@ -14,7 +14,15 @@ Future<void> registerApp() async {
   locator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
   locator.registerLazySingleton<HeaderProvider>(() => HeaderProviderImpl());
   locator.registerLazySingleton<InterceptorProvider>(() => InterceptorProviderImpl());
-  locator.registerLazySingleton<BaseApiService>(() => NetworkApiService(httpConfig: locator<HttpConfig>(), headerProvider: locator<HeaderProvider>(), interceptorProvider: locator<InterceptorProvider>(), logger: locator<LoggerBinding>(), loader: locator<LoaderBinding>()));
+  locator.registerLazySingleton<BaseApiService>(
+    () => NetworkApiService(
+      httpConfig: locator<HttpConfig>(),
+      headerProvider: locator<HeaderProvider>(),
+      interceptorProvider: locator<InterceptorProvider>(),
+      logger: locator<LoggerBinding>(),
+      loader: locator<LoaderBinding>(),
+    ),
+  );
 
   // ── Theme Repository (Step 5) ──────────────────────────
   locator.registerLazySingleton<ThemeRepository>(() => ThemeRepositoryImpl());

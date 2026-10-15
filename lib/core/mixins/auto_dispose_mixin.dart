@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 mixin AutoDisposeMixin on ChangeNotifier {
-  final List _resources = [];
+  final List<Object?> _resources = <Object?>[];
   List<T> get<T>() => _resources.whereType<T>().toList();
   bool _disposed = false;
 
@@ -30,7 +30,7 @@ mixin AutoDisposeMixin on ChangeNotifier {
           res.dispose();
         } else if (res is OverlayEntry) {
           res.remove();
-        } else if (res is StreamSubscription) {
+        } else if (res is StreamSubscription<dynamic>) {
           res.cancel();
         } else if (res is Timer) {
           res.cancel();

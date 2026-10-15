@@ -1,20 +1,20 @@
 {
   "version": "1.0.0",
-  "sealed_at": "2026-10-14T08:24:30Z",
+  "sealed_at": "2026-10-15T03:31:35Z",
   "files": {
     "lib/core/base/base_view_model.dart": "6080233adcfe3ce2d7d83bfc0b731ecacf3083745217fb249d8ba7c350d8bd66",
-    "lib/core/base/base_view.dart": "61097617adb6006527922d6a2ea4ddb64d3b4d235c66653507cd6e76abc5a784",
+    "lib/core/base/base_view.dart": "7b7050b21662b5ba7b882ec45d92a3ff545721637a2c4e37aac0727de2fbeda9",
     "lib/core/base/base.dart": "c70dc098b2a57162abf15dd43a877f36aaad2b5bba894df6697dda6676d31c48",
     "lib/core/base/loader_binding.dart": "cc154aa9ff0cb723bf131f09a22a4573fc2c2018ef7bcc5633b4091bdefd2e2d",
     "lib/core/base/logger_binding.dart": "3b7ffa7602f20ff3402060962a3945418580575bc1ab97d3e3affcebb6a23f08",
     "lib/core/base/toast_binding.dart": "5b8a8bf38d46eff316bb2c0c89e9828f8f6a2249a84816b08be2edb1143338be",
-    "lib/core/mixins/auto_dispose_mixin.dart": "9b921ee40fc966aa47a6e40242bff7b29febf3bbea8b9eec97f79b2b1301f8b4",
+    "lib/core/mixins/auto_dispose_mixin.dart": "f9f5a23b6e92c099f898b90ecfe772b4b1a168f21b30498cecc5a25ede4387e1",
     "lib/core/mixins/loading_controller_mixin.dart": "aca900f29130c1226a7a5316a721f442ef207299c9d960e9be3868c32536f69b",
     "lib/core/mixins/network_aware_mixin.dart": "db43d5ebf51b4f4f494e24a8af52d003d319d68653ef8f66160e7d9f7d0ac6d9",
-    "lib/core/network/api_service.dart": "4b1d049f1fd29dc1192453a46bfd3b36f4b6b1f4adbb3494c5a15d7fe95ad058",
-    "lib/core/network/core_api_base.dart": "e8d9a8face9e3e44acf229ef20aa41e7e073c2140d5205874648ca8a7f9d3675",
+    "lib/core/network/api_service.dart": "6852da20663012b696e2abae5eda0a47fc554166d36ed8bae381db8d6bbe4a1f",
+    "lib/core/network/core_api_base.dart": "0218b60bf109dd5ee08f0f052f76d69385f108c7c1de96c2686ff0abb73ee137",
     "lib/core/network/network_info.dart": "cfba582c5a4bba789cb72e52bc785701c0a6c9f20153493a6fb994f9b044c086",
-    "lib/core/network/http_config.dart": "fa3ed171b1aae2c2472ec53c073004e46f94a2b61fdfa1df91fce0514cca896c",
+    "lib/core/network/http_config.dart": "9934cff71bf17f61e8380c09a65a725c8857ba460af14774f0b5d420172352cb",
     "lib/core/network/header_provider.dart": "fa79ab8fbf612d0e4d90ce5b0c4ed4a5cb5c048dec67799552861e6b44312d5e",
     "lib/core/network/interceptor_provider.dart": "19ba2db11267d832cca64ce1bbf30c03c2893d84767da8903d83c408b86d0654",
     "lib/core/errors/error_handler.dart": "a6f79b68692ef985579334ce26700640af2c7325074ea4184db9352d5c061545",
@@ -46,7 +46,7 @@
     "scripts/ci_local.sh": "ca05109b6fb4a6c84bb14a306e4c91eb82ca34775b677b4dc432e40506963eea",
     "scripts/install_hooks.sh": "03a5e8ddb97ca0b234d74ef2fe7fa0687d59103c08309393150b7ffc8cb4cd4c",
     "scripts/new_project.sh": "e1cd25e47600981a70e939baa8369759ee0c792af84095b26d355ca974c527ec",
-    "scripts/sync_template.sh": "9e00cb68e1c9046a4d260ea4b83c1d83f7c12b17dd574b6b51a5701103ccf63d",
+    "scripts/sync_template.sh": "7471dc6226125112006cf126da181578277218576c0d7e0df4980ffb2fb60a9a",
     "NEW_PROJECT.md": "74f6af6b5cf0d0b5c21b4332b7f0ea1fd5cbaebfc572e287ee0c37b905f27abb"
   }
 }
