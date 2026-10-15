@@ -6,8 +6,6 @@ Future<void> main() async {
     env: Environment.qas,
     providers: appProviders,
     app: const MyApp(),
-    tasks: const [
-      // Add QAS startup tasks here
-    ],
+    tasks: [BootstrapTask(() async => FirebaseService.initializeFirebase(), name: 'firebase')],
   );
 }

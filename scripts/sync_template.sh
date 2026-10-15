@@ -131,7 +131,6 @@ info "Upgrading: $CURRENT_VERSION → $NEW_VERSION"
 step "Comparing sealed files"
 
 UPDATED=()
-SKIPPED=()
 CONFLICTS=()
 ADDED=()
 REMOVED=()

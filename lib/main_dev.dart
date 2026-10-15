@@ -9,6 +9,7 @@ Future<void> main() async {
     providers: appProviders,
     app: const MyApp(),
     tasks: [
+      BootstrapTask(() async => FirebaseService.initializeFirebase(), name: 'firebase'),
       BootstrapTask(() async {
         HttpOverrides.global = _DevHttpOverrides();
       }, name: 'http_overrides'),

@@ -17,6 +17,10 @@ dependencies:
   internet_connection_checker_plus: ^3.1.2
   dio_smart_retry: ^7.0.1
   retry: ^3.1.2
+  firebase_core: ^4.15.0
+  firebase_messaging: ^16.7.0
+  firebase_crashlytics: ^5.4.0
+  flutter_local_notifications: ^22.3.2
 
 dev_dependencies:
   flutter_test:

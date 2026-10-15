@@ -1,13 +1,19 @@
+import 'dart:io';
+
+import 'package:app_base/register.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:retry/retry.dart';
-import 'package:app_base/register.dart';
 
+/// Concrete HTTP client implementation using Dio.
+/// App-level — core only sees [BaseApiService].
 class NetworkApiService implements BaseApiService {
-  NetworkApiService({required this.httpConfig, required this.headerProvider, required this.interceptorProvider, required this.logger, required this.loader}) {
-    _dio = Dio(BaseOptions(connectTimeout: httpConfig.connectTimeout, receiveTimeout: httpConfig.receiveTimeout, sendTimeout: httpConfig.sendTimeout));
-    _dio.interceptors.addAll(interceptorProvider.build(_dio));
-    _retryOptions = RetryOptions(maxAttempts: httpConfig.maxRetries, delayFactor: httpConfig.retryDelay);
+  NetworkApiService({required this.httpConfig, required this.headerProvider, required this.interceptorProvider, required this.logger, required this.loader, Dio? dio})
+    : _dio = dio ?? Dio(),
+      _baseUrl = httpConfig.baseUrl,
+      _baseCustomUrl = httpConfig.customBaseUrl {
+    _initDio();
   }
 
   final HttpConfig httpConfig;
@@ -16,17 +22,26 @@ class NetworkApiService implements BaseApiService {
   final LoggerBinding logger;
   final LoaderBinding loader;
 
-  late final Dio _dio;
-  late final RetryOptions _retryOptions;
+  final Dio _dio;
+  final String _baseUrl;
+  final String _baseCustomUrl;
 
-  String get _baseUrl => httpConfig.baseUrl;
-  String get _baseCustomUrl => httpConfig.customBaseUrl;
+  late final RetryOptions _retryOptions = RetryOptions(maxAttempts: httpConfig.maxRetries, delayFactor: httpConfig.retryDelay);
 
-  bool _retryIf(Object e) {
-    if (e is DioException) {
-      return e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.sendTimeout || e.type == DioExceptionType.connectionError;
+  void _initDio() {
+    _dio.options = BaseOptions(baseUrl: _baseUrl, connectTimeout: httpConfig.connectTimeout, receiveTimeout: httpConfig.receiveTimeout, sendTimeout: httpConfig.sendTimeout);
+
+    // Apply interceptors from the app's provider.
+    _dio.interceptors.addAll(interceptorProvider.build(_dio));
+
+    // Bad certificate callback for non-prod environments when needed.
+    if (!kIsWeb && _dio.httpClientAdapter is IOHttpClientAdapter) {
+      (_dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+        final client = HttpClient();
+        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        return client;
+      };
     }
-    return false;
   }
 
   String _resolveUrl(String url, String? customUrl) => customUrl == null ? '$_baseCustomUrl/$url' : '$_baseUrl/$customUrl';
@@ -34,13 +49,22 @@ class NetworkApiService implements BaseApiService {
   Future<Map<String, dynamic>> _headers({bool isFormData = false}) => headerProvider.build(isFormData: isFormData);
 
   @override
-  Future<CustomResponse> getResponse(String url, {bool enabledRetry = false, bool isDebug = false, Map<String, dynamic>? query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition}) async {
+  Future<CustomResponse<dynamic>> getResponse(
+    String url, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  }) async {
     final requestUrl = _resolveUrl(url, customUrl);
     if (isDebug) {
       logger.log(name: 'NetworkApiService', message: 'GET $requestUrl');
     }
 
-    Future<Response> request() async => _dio.get(
+    Future<Response<dynamic>> request() async => _dio.get<dynamic>(
       requestUrl,
       options: Options(headers: await _headers(), extra: {'customValidate': customValidate, 'isShowMsg': isShowMsg, 'showErrorWhen': errorDisplayCondition}, validateStatus: (_) => true),
       queryParameters: query,
@@ -52,15 +76,29 @@ class NetworkApiService implements BaseApiService {
   }
 
   @override
-  Future<StreamResponse> getStreamResponse(String url, {bool enabledRetry = false, bool isDebug = false, Map<String, dynamic>? query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition}) async {
+  Future<StreamResponse> getStreamResponse(
+    String url, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  }) async {
     final requestUrl = _resolveUrl(url, customUrl);
-    if (isDebug && kDebugMode) {
-      logger.log(name: 'NetworkApiService', message: 'STREAM GET $requestUrl');
+    if (isDebug) {
+      logger.log(name: 'NetworkApiService', message: 'GET STREAM $requestUrl');
     }
 
     Future<Response<ResponseBody>> request() async => _dio.get<ResponseBody>(
       requestUrl,
-      options: Options(headers: await _headers(), responseType: ResponseType.stream, extra: {'customValidate': customValidate, 'isShowMsg': isShowMsg, 'showErrorWhen': errorDisplayCondition}, validateStatus: (_) => true),
+      options: Options(
+        headers: await _headers(),
+        responseType: ResponseType.stream,
+        extra: {'customValidate': customValidate, 'isShowMsg': isShowMsg, 'showErrorWhen': errorDisplayCondition},
+        validateStatus: (_) => true,
+      ),
       queryParameters: query,
     );
 
@@ -68,20 +106,30 @@ class NetworkApiService implements BaseApiService {
 
     final body = response.data;
     if (body == null) {
-      throw StateError('The download response did not contain a stream.');
+      throw const ServerException('Empty stream response');
     }
 
     return StreamResponse(statusCode: response.statusCode ?? 0, stream: body.stream, headers: response.headers);
   }
 
   @override
-  Future<CustomResponse> postResponse(String url, dynamic jsonBody, {bool enabledRetry = false, bool isDebug = false, dynamic query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition}) async {
+  Future<CustomResponse<dynamic>> postResponse(
+    String url,
+    dynamic jsonBody, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  }) async {
     final requestUrl = _resolveUrl(url, customUrl);
     if (isDebug) {
       logger.log(name: 'NetworkApiService', message: 'POST $requestUrl');
     }
 
-    final response = await _dio.post(
+    final response = await _dio.post<dynamic>(
       requestUrl,
       data: jsonBody,
       options: Options(
@@ -96,13 +144,23 @@ class NetworkApiService implements BaseApiService {
   }
 
   @override
-  Future<CustomResponse> putResponse(String url, dynamic jsonBody, {bool enabledRetry = false, bool isDebug = false, dynamic query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition}) async {
+  Future<CustomResponse<dynamic>> putResponse(
+    String url,
+    dynamic jsonBody, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  }) async {
     final requestUrl = _resolveUrl(url, customUrl);
     if (isDebug) {
       logger.log(name: 'NetworkApiService', message: 'PUT $requestUrl');
     }
 
-    final response = await _dio.put(
+    final response = await _dio.put<dynamic>(
       requestUrl,
       data: jsonBody,
       options: Options(
@@ -117,13 +175,23 @@ class NetworkApiService implements BaseApiService {
   }
 
   @override
-  Future<CustomResponse> deleteResponse(String url, dynamic jsonBody, {bool enabledRetry = false, bool isDebug = false, dynamic query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition}) async {
+  Future<CustomResponse<dynamic>> deleteResponse(
+    String url,
+    dynamic jsonBody, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  }) async {
     final requestUrl = _resolveUrl(url, customUrl);
     if (isDebug) {
       logger.log(name: 'NetworkApiService', message: 'DELETE $requestUrl');
     }
 
-    final response = await _dio.delete(
+    final response = await _dio.delete<dynamic>(
       requestUrl,
       data: jsonBody,
       options: Options(
@@ -137,13 +205,15 @@ class NetworkApiService implements BaseApiService {
     return _returnResponse(response, isDebug);
   }
 
-  CustomResponse _returnResponse(Response<dynamic> response, bool isDebug) {
+  CustomResponse<dynamic> _returnResponse(Response<dynamic> response, bool isDebug) {
     if (isDebug && kDebugMode) {
       logger.log(name: 'NetworkApiService', message: 'Response ${response.statusCode}');
     }
 
     loader.hide();
 
-    return CustomResponse(data: response.data, statusCode: response.statusCode ?? 400);
+    return CustomResponse<dynamic>(data: response.data, statusCode: response.statusCode ?? 400);
   }
+
+  bool _retryIf(Exception e) => e is DioException && (e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.receiveTimeout);
 }

@@ -1,0 +1,79 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
+
+/// Service managing Firebase Crashlytics error reporting and diagnostics.
+class CrashlyticsService {
+  CrashlyticsService._();
+
+  static bool _initialized = false;
+  static bool get isInitialized => _initialized;
+
+  /// Returns the underlying [FirebaseCrashlytics] instance.
+  static FirebaseCrashlytics get instance => FirebaseCrashlytics.instance;
+
+  /// Initialize Crashlytics hooks and error handlers.
+  ///
+  /// By default, crash reporting is disabled in [kDebugMode] unless explicitly overridden.
+  static Future<void> initialize({bool? enabled}) async {
+    try {
+      final isEnabled = enabled ?? !kDebugMode;
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isEnabled);
+
+      // Pass all uncaught Flutter framework errors to Crashlytics
+      final originalFlutterOnError = FlutterError.onError;
+      FlutterError.onError = (FlutterErrorDetails details) {
+        if (isEnabled) {
+          FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+        }
+        originalFlutterOnError?.call(details);
+      };
+
+      // Pass all uncaught asynchronous errors to Crashlytics
+      PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+        if (isEnabled) {
+          FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        }
+        return true;
+      };
+
+      _initialized = true;
+      debugPrint('[Crashlytics] Initialized successfully (enabled: $isEnabled)');
+    } catch (e, stack) {
+      debugPrint('[Crashlytics] Initialization failed: $e\n$stack');
+    }
+  }
+
+  /// Manually record a caught error to Crashlytics.
+  static Future<void> recordError(Object exception, StackTrace? stack, {dynamic reason, Iterable<Object> information = const [], bool fatal = false}) async {
+    if (!_initialized) return;
+    try {
+      await FirebaseCrashlytics.instance.recordError(exception, stack, reason: reason, information: information, fatal: fatal);
+    } catch (e) {
+      debugPrint('[Crashlytics] Failed to record error: $e');
+    }
+  }
+
+  /// Append a breadcrumb log message that is attached to future crash reports.
+  static Future<void> log(String message) async {
+    if (!_initialized) return;
+    try {
+      await FirebaseCrashlytics.instance.log(message);
+    } catch (_) {}
+  }
+
+  /// Specify a user identifier linked to subsequent crash reports.
+  static Future<void> setUserId(String userId) async {
+    if (!_initialized) return;
+    try {
+      await FirebaseCrashlytics.instance.setUserIdentifier(userId);
+    } catch (_) {}
+  }
+
+  /// Set a custom key-value diagnostic pair in Crashlytics.
+  static Future<void> setCustomKey(String key, Object value) async {
+    if (!_initialized) return;
+    try {
+      await FirebaseCrashlytics.instance.setCustomKey(key, value);
+    } catch (_) {}
+  }
+}

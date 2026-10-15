@@ -1,4 +1,5 @@
-import 'package:app_base/register.dart';
+import 'package:flutter/widgets.dart';
+import '../base/logger_binding.dart';
 
 /// ════════════════════════════════════════════════════════════
 /// NAVIGATION LOGGER

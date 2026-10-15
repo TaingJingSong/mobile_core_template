@@ -6,15 +6,63 @@ enum ErrorDisplayCondition { always, unauthorizedOnly, never }
 
 /// Contract for the app's HTTP client.
 abstract interface class BaseApiService {
-  Future<CustomResponse> getResponse(String url, {bool enabledRetry = false, bool isDebug = false, Map<String, dynamic>? query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition});
+  Future<CustomResponse<dynamic>> getResponse(
+    String url, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  });
 
-  Future<StreamResponse> getStreamResponse(String url, {bool enabledRetry = false, bool isDebug = false, Map<String, dynamic>? query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition});
+  Future<StreamResponse> getStreamResponse(
+    String url, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  });
 
-  Future<CustomResponse> postResponse(String url, dynamic jsonBody, {bool enabledRetry = false, bool isDebug = false, dynamic query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition});
+  Future<CustomResponse<dynamic>> postResponse(
+    String url,
+    dynamic jsonBody, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  });
 
-  Future<CustomResponse> putResponse(String url, dynamic jsonBody, {bool enabledRetry = false, bool isDebug = false, dynamic query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition});
+  Future<CustomResponse<dynamic>> putResponse(
+    String url,
+    dynamic jsonBody, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  });
 
-  Future<CustomResponse> deleteResponse(String url, dynamic jsonBody, {bool enabledRetry = false, bool isDebug = false, dynamic query, String? customUrl, bool isShowMsg = true, bool customValidate = false, ErrorDisplayCondition? errorDisplayCondition});
+  Future<CustomResponse<dynamic>> deleteResponse(
+    String url,
+    dynamic jsonBody, {
+    bool enabledRetry = false,
+    bool isDebug = false,
+    Map<String, dynamic>? query,
+    String? customUrl,
+    bool isShowMsg = true,
+    bool customValidate = false,
+    ErrorDisplayCondition? errorDisplayCondition,
+  });
 }
 
 class StreamResponse {
@@ -45,9 +93,9 @@ class CustomResponse<T> {
 
   CustomResponse({required this.statusCode, required this.data});
 
-  CustomResponse copyWith({required int statusCode, required T data}) => CustomResponse(statusCode: statusCode, data: data);
+  CustomResponse<T> copyWith({int? statusCode, T? data}) => CustomResponse<T>(statusCode: statusCode ?? this.statusCode, data: data ?? this.data);
 
-  factory CustomResponse.fromJson(Map<String, dynamic> json) => CustomResponse(statusCode: json["statusCode"], data: json["data"]);
+  factory CustomResponse.fromJson(Map<String, dynamic> json) => CustomResponse<T>(statusCode: (json['statusCode'] as num?)?.toInt() ?? 0, data: json['data'] as T);
 
-  Map<String, dynamic> toJson() => {"statusCode": statusCode, "data": data};
+  Map<String, dynamic> toJson() => {'statusCode': statusCode, 'data': data};
 }
