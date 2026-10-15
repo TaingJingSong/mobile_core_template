@@ -1,4 +1,4 @@
-import 'package:app_base/register.dart';
+import 'api_service.dart';
 
 /// Base class for grouped endpoints. Each concrete API defines a
 /// prefix (`apiPrefix`) and whether it targets the custom base URL

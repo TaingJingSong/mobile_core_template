@@ -1,11 +1,10 @@
 import 'dart:io';
 
+import 'package:app_base/register.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:retry/retry.dart';
-
-import 'package:app_base/register.dart';
 
 /// Concrete HTTP client implementation using Dio.
 /// App-level — core only sees [BaseApiService].

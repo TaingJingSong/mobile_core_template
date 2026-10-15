@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:app_base/register.dart';
 import 'package:app_base/main_app.dart';
+import 'package:app_base/register.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   setUpAll(() async {

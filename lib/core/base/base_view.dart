@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../di/locator.dart';
-import '../network/network_info.dart';
-import '../mixins/network_aware_mixin.dart';
 import '../mixins/loading_controller_mixin.dart';
+import '../mixins/network_aware_mixin.dart';
+import '../network/network_info.dart';
 import 'base_view_model.dart';
 import 'loader_binding.dart';
 import 'toast_binding.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import '../mixins/loading_controller_mixin.dart';
 import '../mixins/auto_dispose_mixin.dart';
+import '../mixins/loading_controller_mixin.dart';
 
 /// ════════════════════════════════════════════════════════════
 /// CORE VIEW MODEL

@@ -95,7 +95,7 @@ class CustomResponse<T> {
 
   CustomResponse<T> copyWith({int? statusCode, T? data}) => CustomResponse<T>(statusCode: statusCode ?? this.statusCode, data: data ?? this.data);
 
-  factory CustomResponse.fromJson(Map<String, dynamic> json) => CustomResponse<T>(statusCode: (json["statusCode"] as num?)?.toInt() ?? 0, data: json["data"] as T);
+  factory CustomResponse.fromJson(Map<String, dynamic> json) => CustomResponse<T>(statusCode: (json['statusCode'] as num?)?.toInt() ?? 0, data: json['data'] as T);
 
-  Map<String, dynamic> toJson() => {"statusCode": statusCode, "data": data};
+  Map<String, dynamic> toJson() => {'statusCode': statusCode, 'data': data};
 }

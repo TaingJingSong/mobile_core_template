@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:app_base/register.dart';
+
+import 'exceptions.dart';
+import 'failure.dart';
 
 class ErrorHandler {
   static Failure map(Object error) {
