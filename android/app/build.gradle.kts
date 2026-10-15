@@ -43,3 +43,15 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+val hasGoogleServices = file("google-services.json").exists() ||
+    file("src/dev/google-services.json").exists() ||
+    file("src/qas/google-services.json").exists() ||
+    file("src/pre/google-services.json").exists() ||
+    file("src/prod/google-services.json").exists()
+
+if (hasGoogleServices) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+}
+

@@ -6,8 +6,6 @@ Future<void> main() async {
     env: Environment.pre,
     providers: appProviders,
     app: const MyApp(),
-    tasks: const [
-      // Add Pre-prod startup tasks here
-    ],
+    tasks: [BootstrapTask(() async => FirebaseService.initializeFirebase(), name: 'firebase')],
   );
 }

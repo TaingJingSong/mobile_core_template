@@ -27,6 +27,7 @@ export 'core/di/locator.dart';
 export 'core/di/register_app.dart';
 export 'core/di/register_core.dart';
 export 'data/data.dart';
+export 'data/singletons/fcm_token_singleton.dart';
 export 'data/singletons/global_overlay.dart';
 export 'data/singletons/user_singleton.dart';
 // ── Routes & Widgets ────────────────────────────────────────
