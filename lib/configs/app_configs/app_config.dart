@@ -12,7 +12,7 @@ class AppConfig {
   static const String buildNumber = '1';
 
   // API
-  static const String baseUrl = 'https://api.example.com';
+  static const String baseUrl = String.fromEnvironment('API_BASE_URL');
   static const Duration connectTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
   static const Duration sendTimeout = Duration(seconds: 30);
@@ -39,6 +39,6 @@ class AppConfig {
   static const int defaultPageSize = 20;
 
   // Debug
-  static const bool logNetwork = true;
-  static const bool logNavigation = true;
+  static const bool logNetwork = false;
+  static const bool logNavigation = false;
 }

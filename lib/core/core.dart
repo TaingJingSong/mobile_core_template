@@ -1,11 +1,9 @@
-export 'app/app.dart';
 export 'base/base_view.dart';
 export 'base/base_view_model.dart';
 export 'base/loader_binding.dart';
 export 'base/logger_binding.dart';
 export 'base/toast_binding.dart';
 export 'di/locator.dart';
-export 'di/register_app.dart';
 export 'di/register_core.dart';
 export 'errors/error_handler.dart';
 export 'errors/exceptions.dart';

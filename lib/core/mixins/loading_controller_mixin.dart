@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../base/loader_binding.dart';
 
 mixin LoadingControllerMixin on ChangeNotifier {

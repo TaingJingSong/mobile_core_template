@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_base/register.dart';
+
 import 'main_app.dart';
 
 Future<void> main() async {
@@ -9,7 +10,6 @@ Future<void> main() async {
     providers: appProviders,
     app: const MyApp(),
     tasks: [
-      BootstrapTask(() async => FirebaseService.initializeFirebase(), name: 'firebase'),
       BootstrapTask(() async {
         HttpOverrides.global = _DevHttpOverrides();
       }, name: 'http_overrides'),

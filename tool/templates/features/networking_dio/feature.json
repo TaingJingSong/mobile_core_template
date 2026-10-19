@@ -1,0 +1,6 @@
+{
+  "packages": ["dio:^5.11.1"],
+  "requirements": "Set API_BASE_URL to an HTTPS endpoint before creating the client. No credentials are bundled.",
+  "import": "",
+  "initialize": ""
+}

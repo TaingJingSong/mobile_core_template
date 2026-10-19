@@ -1,0 +1,6 @@
+{
+  "packages": ["firebase_core:^4.15.0", "firebase_crashlytics:^5.4.0", "firebase_messaging:^16.7.0", "flutter_local_notifications:^22.3.2"],
+  "requirements": "Run flutterfire configure for your own project and supply FirebaseService.optionsProvider before startup, or configure native Firebase files. Android notifications require desugaring and a notification icon; iOS requires push entitlement, APNs configuration, and remote-notification background mode. Native setup is app-owned and is not automatically removed. Verify on physical devices before release.",
+  "import": "../integrations/firebase/firebase_service.dart",
+  "initialize": "await FirebaseService.initialize();"
+}

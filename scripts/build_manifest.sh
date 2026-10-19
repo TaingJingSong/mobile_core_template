@@ -6,6 +6,10 @@ VERSION="${VERSION:-$(cat .template-version 2>/dev/null || echo '0.0.0')}"
 SEALED_FILE="${SEALED_FILE:-.template-sealed}"
 MANIFEST_FILE="${MANIFEST_FILE:-.template/manifest.json}"
 
+if [[ -e "$MANIFEST_FILE" && "${1:-}" != "--refresh" ]]; then
+  echo "Manifest already exists. Do not reset a sync baseline to hide conflicts. Use --refresh only for a reviewed maintainer baseline." >&2
+  exit 1
+fi
 mkdir -p "$(dirname "$MANIFEST_FILE")"
 
 # Hash a single file. Uses shasum on macOS, sha256sum on Linux.

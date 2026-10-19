@@ -4,8 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import '../../data/singletons/fcm_token_singleton.dart';
-import '../app_configs/flavor/flavor_config.dart';
+import 'fcm_token_singleton.dart';
 import 'crashlytics_service.dart';
 import 'notification_service.dart';
 
@@ -44,7 +43,7 @@ class FirebaseService {
   /// If [options] is not supplied, it falls back to [optionsProvider]?.call() or
   /// native platform configuration (google-services.json / GoogleService-Info.plist).
   static Future<void> initialize({FirebaseOptions? options, bool enableCrashlytics = true, bool enableNotifications = true}) async {
-    final flavor = FlavorConfig.getFlavorType;
+    const flavor = 'configured project';
     debugPrint('[Firebase] Initializing for flavor "$flavor"...');
 
     try {
@@ -57,7 +56,6 @@ class FirebaseService {
         await Firebase.initializeApp();
       }
 
-      _initialized = true;
       debugPrint('[Firebase] Core initialized successfully');
 
       // Initialize Crashlytics
@@ -70,12 +68,14 @@ class FirebaseService {
         await NotificationService.initialize();
       }
 
+      _initialized = true;
       debugPrint('[Firebase] All services initialized successfully for flavor "$flavor"');
     } catch (e, stack) {
       debugPrint(
         '⚠️ [Firebase] Initialization failed: $e\n'
         'Ensure google-services.json (Android) and GoogleService-Info.plist (iOS) are properly placed.\n$stack',
       );
+      rethrow;
     }
   }
 

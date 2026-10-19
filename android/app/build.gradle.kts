@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+val releaseKeys = Properties()
+val releaseKeyFile = rootProject.file("key.properties")
+if (releaseKeyFile.exists()) releaseKeyFile.inputStream().use { releaseKeys.load(it) }
+val isReleaseBuild = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+require(!isReleaseBuild || releaseKeyFile.exists()) {
+    "Release signing requires android/key.properties. Debug signing is never used for releases."
 }
 
 android {
@@ -27,11 +37,20 @@ android {
         multiDexEnabled = true
     }
 
+    signingConfigs {
+        if (releaseKeyFile.exists()) {
+            create("release") {
+                keyAlias = releaseKeys.getProperty("keyAlias")
+                keyPassword = releaseKeys.getProperty("keyPassword")
+                storeFile = file(releaseKeys.getProperty("storeFile"))
+                storePassword = releaseKeys.getProperty("storePassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            if (releaseKeyFile.exists()) signingConfig = signingConfigs.getByName("release")
         }
     }
 }
@@ -49,15 +68,3 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
-
-val hasGoogleServices = file("google-services.json").exists() ||
-    file("src/dev/google-services.json").exists() ||
-    file("src/qas/google-services.json").exists() ||
-    file("src/pre/google-services.json").exists() ||
-    file("src/prod/google-services.json").exists()
-
-if (hasGoogleServices) {
-    apply(plugin = "com.google.gms.google-services")
-    apply(plugin = "com.google.firebase.crashlytics")
-}
-

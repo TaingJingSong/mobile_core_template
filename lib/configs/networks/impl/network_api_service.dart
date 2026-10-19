@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:app_base/register.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:retry/retry.dart';
 
@@ -33,15 +30,6 @@ class NetworkApiService implements BaseApiService {
 
     // Apply interceptors from the app's provider.
     _dio.interceptors.addAll(interceptorProvider.build(_dio));
-
-    // Bad certificate callback for non-prod environments when needed.
-    if (!kIsWeb && _dio.httpClientAdapter is IOHttpClientAdapter) {
-      (_dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
-        final client = HttpClient();
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return client;
-      };
-    }
   }
 
   String _resolveUrl(String url, String? customUrl) => customUrl == null ? '$_baseCustomUrl/$url' : '$_baseUrl/$customUrl';

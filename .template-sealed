@@ -18,7 +18,5 @@ lib/core/services/
 lib/core/widgets/
 lib/core/di/locator.dart
 lib/core/di/register_core.dart
-lib/core/app/bootstrap.dart
 lib/core/core.dart
-scripts/
 NEW_PROJECT.md

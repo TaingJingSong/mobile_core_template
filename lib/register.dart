@@ -10,6 +10,8 @@ export 'package:provider/provider.dart';
 export 'package:provider/single_child_widget.dart';
 
 // ── Providers ───────────────────────────────────────────────
+export 'app/bootstrap.dart';
+export 'app/di/register_app.dart';
 export 'app_providers.dart';
 export 'configs/app_configs/register.dart';
 export 'configs/app_navigator_keys.dart';
@@ -24,10 +26,8 @@ export 'configs/translation/app_translation_key.dart';
 export 'core/core.dart';
 // ── Core DI ─────────────────────────────────────────────────
 export 'core/di/locator.dart';
-export 'core/di/register_app.dart';
 export 'core/di/register_core.dart';
 export 'data/data.dart';
-export 'data/singletons/fcm_token_singleton.dart';
 export 'data/singletons/global_overlay.dart';
 export 'data/singletons/user_singleton.dart';
 // ── Routes & Widgets ────────────────────────────────────────
