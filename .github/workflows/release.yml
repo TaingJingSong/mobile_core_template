@@ -9,7 +9,26 @@ permissions:
   contents: write
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.3'
+          cache: true
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed lib test
+      - run: flutter analyze --fatal-infos
+      - run: flutter test
+      - name: Verify template tooling when present
+        if: ${{ hashFiles('tool/mobile_core.dart') != '' }}
+        run: |
+          python3 -m unittest discover -s tool/tests -v
+          bash scripts/test_generated_projects.sh
+
   android-release:
+    needs: verify
     name: Android release AAB
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -24,6 +43,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.44.3'
           channel: stable
           cache: true
 
@@ -69,7 +89,8 @@ jobs:
           generate_release_notes: true
 
   ios-release:
-    name: iOS unsigned IPA
+    needs: verify
+    name: iOS unsigned app bundle ZIP
     runs-on: macos-latest
     timeout-minutes: 45
 
@@ -78,6 +99,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.44.3'
           channel: stable
           cache: true
 
@@ -94,7 +116,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ios-unsigned
+          name: ios-unsigned-app-bundle
           path: build/ios/iphoneos/Runner.zip
 
       - uses: softprops/action-gh-release@v2

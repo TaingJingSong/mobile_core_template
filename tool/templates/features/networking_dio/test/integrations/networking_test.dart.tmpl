@@ -1,0 +1,15 @@
+import 'package:{{name}}/integrations/networking.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  test('rejects missing, placeholder, or insecure API URLs', () {
+    for (final url in ['', 'https://api.example.com', 'http://api.acme.com', 'https://user:pass@api.acme.com']) {
+      expect(() => createApiClient(baseUrl: url), throwsArgumentError);
+    }
+  });
+  test('creates a client without making a request', () {
+    final client = createApiClient(baseUrl: 'https://api.acme.com');
+    expect(client.options.baseUrl, 'https://api.acme.com');
+    client.close();
+  });
+}

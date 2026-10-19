@@ -1,20 +1,8 @@
-import 'package:app_base/register.dart';
 import 'flavor_values.dart';
 
 enum Environment { dev, qas, pre, prod }
 
-FlavorValues valuesFor(Environment env) {
-  switch (env) {
-    case Environment.dev:
-      return const FlavorValues(name: 'dev', url: 'http://192.168.0.178:8000', firebaseRoot: 'Dev', distance: 100000000000);
-    case Environment.qas:
-      return const FlavorValues(name: 'qas', url: 'https://hris-uat-api.innotechsolution.tech', firebaseRoot: 'Qas', distance: 100000000000);
-    case Environment.pre:
-      return const FlavorValues(name: 'pre', url: 'http://192.168.0.229:8000', firebaseRoot: 'Pre', distance: 100000000000);
-    case Environment.prod:
-      return const FlavorValues(name: '', url: 'https://hrms-api.innotechsolution.tech', firebaseRoot: 'Production', distance: 100);
-  }
-}
+FlavorValues valuesFor(Environment env) => FlavorValues(name: env.name, url: const String.fromEnvironment('API_BASE_URL'));
 
 class FlavorConfig {
   FlavorConfig._();
@@ -25,27 +13,32 @@ class FlavorConfig {
   static void setEnvironment(Environment env) {
     _env = env;
     _values = valuesFor(env);
-    try {
-      locator<LoggerBinding>().log(name: 'FLAVOR', message: env.name);
-    } catch (_) {
-      debugPrint('[FLAVOR] ${env.name}');
+    validateApiUrl(_values.url, production: env == Environment.prod);
+  }
+
+  // An empty URL allows the starter to run offline. Configuring an API is explicit.
+  static void validateApiUrl(String value, {required bool production}) {
+    if (value.isEmpty) return;
+    final uri = Uri.tryParse(value);
+    if (uri == null ||
+        !uri.hasAuthority ||
+        uri.host.isEmpty ||
+        uri.userInfo.isNotEmpty ||
+        uri.hasQuery ||
+        uri.hasFragment ||
+        !['https', 'http'].contains(uri.scheme) ||
+        (production && uri.scheme != 'https') ||
+        uri.host == 'example.com' ||
+        uri.host.endsWith('.example.com') ||
+        uri.host.endsWith('.invalid')) {
+      throw ArgumentError('API_BASE_URL must be a real HTTP(S) API URL (HTTPS in production).');
     }
   }
 
   static Environment get environment => _env;
   static FlavorValues get values => _values;
-
-  // Convenience accessors
   static String get flavorType => _values.name;
   static String get urlByType => _values.url;
-  static String? get socketUrlByType => _values.socketUrl;
-  static String get firebaseRootByType => _values.firebaseRoot;
-  static int get distanceByType => _values.distance;
-
-  // Aliases for compatibility
   static String get getFlavorType => flavorType;
   static String get getUrlFlavorByType => urlByType;
-  static String? get getSocketUrlFlavorByType => socketUrlByType;
-  static String get getFirebaseRootFlavorByType => firebaseRootByType;
-  static int get getDistanceFlavorByType => distanceByType;
 }

@@ -10,7 +10,11 @@
 
 set -euo pipefail
 
-TEMPLATE_REPO="${TEMPLATE_REPO:-git@github.com:your-org/mobile-template.git}"
+TEMPLATE_REPO="${TEMPLATE_REPO:-https://github.com/TaingJingSong/mobile_core_template.git}"
+case "$TEMPLATE_REPO" in
+  https://*|ssh://*|git@*) ;;
+  *) [[ -d "$TEMPLATE_REPO" && "$TEMPLATE_REPO" != -* ]] || { echo "Invalid TEMPLATE_REPO" >&2; exit 1; } ;;
+esac
 FETCH=0
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
@@ -31,7 +35,7 @@ printf '%s\n' "${BLUE}ℹ${RESET} Local template version: $CURRENT"
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 
-git clone --quiet --depth 1 "$TEMPLATE_REPO" "$TMP/template" >/dev/null 2>&1 \
+git clone --quiet --depth 1 -- "$TEMPLATE_REPO" "$TMP/template" >/dev/null 2>&1 \
   || { echo "Failed to fetch template from $TEMPLATE_REPO"; exit 1; }
 
 LATEST=$(cat "$TMP/template/.template-version" 2>/dev/null || echo '0.0.0')

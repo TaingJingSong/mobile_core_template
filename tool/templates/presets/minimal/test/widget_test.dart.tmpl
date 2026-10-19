@@ -1,0 +1,9 @@
+import 'package:{{name}}/main.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  testWidgets('App starts without integrations or credentials', (tester) async {
+    await tester.pumpWidget(const MyApp());
+    expect(find.text('Home View'), findsOneWidget);
+  });
+}

@@ -10,7 +10,7 @@ Future<void> registerApp() async {
   locator.registerLazySingleton<LoggerBinding>(() => LoggerBindingImpl());
 
   // ── Network (Step 3) ────────────────────────────────────
-  locator.registerLazySingleton<HttpConfig>(() => const HttpConfigImpl());
+  locator.registerLazySingleton<HttpConfig>(() => HttpConfigImpl());
   locator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
   locator.registerLazySingleton<HeaderProvider>(() => HeaderProviderImpl());
   locator.registerLazySingleton<InterceptorProvider>(() => InterceptorProviderImpl());

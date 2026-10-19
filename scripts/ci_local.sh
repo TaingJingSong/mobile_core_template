@@ -35,7 +35,8 @@ run() {
 
 # ── Checks every PR runs ────────────────────────────────────────
 run flutter pub get
-run dart format --set-exit-if-changed lib test
+run dart format --output=none --set-exit-if-changed lib test tool/mobile_core.dart
+run python3 -m unittest discover -s tool/tests -v
 run flutter analyze --fatal-infos
 run flutter test --coverage
 

@@ -5,6 +5,10 @@ on:
     - cron: '0 9 * * 1'   # Mondays 09:00 UTC
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   check:
     name: Check template version
@@ -26,7 +30,7 @@ jobs:
         env:
           TEMPLATE_REPO: ${{ vars.TEMPLATE_REPO }}
         run: |
-          git clone --quiet --depth 1 "$TEMPLATE_REPO" /tmp/template
+          git clone --quiet --depth 1 -- "${TEMPLATE_REPO:-https://github.com/TaingJingSong/mobile_core_template.git}" /tmp/template
           VERSION=$(cat /tmp/template/.template-version)
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 

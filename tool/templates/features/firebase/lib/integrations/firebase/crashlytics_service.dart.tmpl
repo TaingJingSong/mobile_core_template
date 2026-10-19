@@ -15,9 +15,12 @@ class CrashlyticsService {
   ///
   /// By default, crash reporting is disabled in [kDebugMode] unless explicitly overridden.
   static Future<void> initialize({bool? enabled}) async {
+    if (_initialized) return;
     try {
       final isEnabled = enabled ?? !kDebugMode;
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isEnabled);
+
+      if (!isEnabled) return;
 
       // Pass all uncaught Flutter framework errors to Crashlytics
       final originalFlutterOnError = FlutterError.onError;
@@ -29,17 +32,18 @@ class CrashlyticsService {
       };
 
       // Pass all uncaught asynchronous errors to Crashlytics
+      final originalPlatformOnError = PlatformDispatcher.instance.onError;
       PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
         if (isEnabled) {
           FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
         }
-        return true;
+        return originalPlatformOnError?.call(error, stack) ?? false;
       };
 
       _initialized = true;
       debugPrint('[Crashlytics] Initialized successfully (enabled: $isEnabled)');
     } catch (e, stack) {
-      debugPrint('[Crashlytics] Initialization failed: $e\n$stack');
+      Error.throwWithStackTrace(e, stack);
     }
   }
 

@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "sealed_at": "2026-10-15T03:39:18Z",
+  "version": "2.0.0",
+  "sealed_at": "2026-10-19T07:52:09Z",
   "files": {
     "lib/core/base/base_view_model.dart": "0f90f366e2e6b7a11b2419da31b48e54466a6011b98e53a03b647c586f60079c",
     "lib/core/base/base_view.dart": "1b3551f3c748503a42363422651569f05c6836e206a2c3e725a136b10aad0f3b",
@@ -8,10 +8,10 @@
     "lib/core/base/loader_binding.dart": "cc154aa9ff0cb723bf131f09a22a4573fc2c2018ef7bcc5633b4091bdefd2e2d",
     "lib/core/base/logger_binding.dart": "3b7ffa7602f20ff3402060962a3945418580575bc1ab97d3e3affcebb6a23f08",
     "lib/core/base/toast_binding.dart": "5b8a8bf38d46eff316bb2c0c89e9828f8f6a2249a84816b08be2edb1143338be",
-    "lib/core/mixins/auto_dispose_mixin.dart": "f9f5a23b6e92c099f898b90ecfe772b4b1a168f21b30498cecc5a25ede4387e1",
-    "lib/core/mixins/loading_controller_mixin.dart": "aca900f29130c1226a7a5316a721f442ef207299c9d960e9be3868c32536f69b",
-    "lib/core/mixins/network_aware_mixin.dart": "db43d5ebf51b4f4f494e24a8af52d003d319d68653ef8f66160e7d9f7d0ac6d9",
-    "lib/core/network/api_service.dart": "2a83b150061582246d88ee94971a7810486d500a4cc6dede14c42906693a80c2",
+    "lib/core/mixins/auto_dispose_mixin.dart": "57436ed9e63c0e7924fbf0c4341b73abf311e812e0793fe48cd641a0c494ba79",
+    "lib/core/mixins/loading_controller_mixin.dart": "8c23ebd512a4be0e5b68a80950233ecb3ad4e33843310febc6c4d5c23ca71ccd",
+    "lib/core/mixins/network_aware_mixin.dart": "944ec6fc0928a1d4f2e8d3a62f53d096c0a7622a5b4596391d5cb6bb858e0633",
+    "lib/core/network/api_service.dart": "468adb4406a9bc016f6ad587cd89f82f957c0148d5c1a6959438bb19af827e30",
     "lib/core/network/core_api_base.dart": "748080523d783dbb866fa6db963c6a384e000cee56fe983186108d394b593b54",
     "lib/core/network/network_info.dart": "cfba582c5a4bba789cb72e52bc785701c0a6c9f20153493a6fb994f9b044c086",
     "lib/core/network/http_config.dart": "9934cff71bf17f61e8380c09a65a725c8857ba460af14774f0b5d420172352cb",
@@ -26,7 +26,7 @@
     "lib/core/theme/theme_repository.dart": "5907506508f1184abc973dd8a32961be155aed13e576a3c0262df13704b47c9e",
     "lib/core/translation/core_translation_key.dart": "15cb5f4b2e9ab87d663457fc6eb5e5296b4a525d4aff151335571944bab6f54a",
     "lib/core/translation/translation_extension.dart": "237ef3115b18de4ef30d0e2fcaab6b712fb5b52c58d8b8b5fbfc213f91312447",
-    "lib/core/routing/navigation_logger.dart": "62f75edc8f1ffc23900fa52a1c271f43118681b474e4831f9295b984f50fa9bc",
+    "lib/core/routing/navigation_logger.dart": "1a03be92017889e6d5af82d1434f9ae4da002b269425b028f6608d9fe282e2cf",
     "lib/core/routing/navigator_keys.dart": "12787b23c77abb0be3b273495eccc4441fcbc66767721e7d89d3900a6c111dd5",
     "lib/core/services/deep_link_service.dart": "28bf16566f64d10e963a4f318eb2b877fb353480142ef12bd14c536056002dac",
     "lib/core/widgets/core_widget/app_button.dart": "1862b0fc2e8f0d21d07dd68bf15b0965a74ca75a7164bcba9a98ddb76d167426",
@@ -38,15 +38,7 @@
     "lib/core/widgets/widgets.dart": "96bff6e8328c535185a6cc95911138aa72445aa3e18ccc24fbc9e4021b5948ba",
     "lib/core/di/locator.dart": "6ee6f192e442d16fd39310d8e53aad50b6db2b8a633767f3410f8a23512044e4",
     "lib/core/di/register_core.dart": "183cab1107fceaa2d7d2256663b9a11d99ce8a8c50a1a96d14ece4c65ef9d7f3",
-    "lib/core/app/bootstrap.dart": "c52e5bc7e44d340464e0b2a0beb355dcddca709802638a8a1c5eaef7d01c4f49",
-    "lib/core/core.dart": "39793cdd6166ba2be54836636ed61c988aeccc979cb1a740fa008bdb6e38580f",
-    "scripts/add_module.sh": "997bec6bdc098bf3243ac879e0671ae585b18e13d2fe971a5ff5e610ed8ac5a7",
-    "scripts/build_manifest.sh": "44379e5ef81506b6c718b40bd698d949942221f284e8537d03d1b3179e0b52a6",
-    "scripts/check_template_drift.sh": "37bf97420a6faa06712eae808b7165275b9f6edbef6068cc83df6544b7a50c73",
-    "scripts/ci_local.sh": "ca05109b6fb4a6c84bb14a306e4c91eb82ca34775b677b4dc432e40506963eea",
-    "scripts/install_hooks.sh": "03a5e8ddb97ca0b234d74ef2fe7fa0687d59103c08309393150b7ffc8cb4cd4c",
-    "scripts/new_project.sh": "e1cd25e47600981a70e939baa8369759ee0c792af84095b26d355ca974c527ec",
-    "scripts/sync_template.sh": "7471dc6226125112006cf126da181578277218576c0d7e0df4980ffb2fb60a9a",
-    "NEW_PROJECT.md": "74f6af6b5cf0d0b5c21b4332b7f0ea1fd5cbaebfc572e287ee0c37b905f27abb"
+    "lib/core/core.dart": "4feabe32abf02af231948fea171d8601bf7f66a934249798df69e7cdbc26dfed",
+    "NEW_PROJECT.md": "30259922254fd525c6ece0dac39ac37f1a9703ca77d4e4ccef80eb958cb4c1bc"
   }
 }

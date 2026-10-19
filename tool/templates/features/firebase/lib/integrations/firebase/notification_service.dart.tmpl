@@ -6,8 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import '../../data/singletons/fcm_token_singleton.dart';
-import '../../routes/app_router.dart';
+import 'fcm_token_singleton.dart';
 
 /// Top-level background message handler required by Firebase Messaging.
 /// Must be annotated with [pragma('vm:entry-point')] so it isn't tree-shaken.
@@ -18,7 +17,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   } catch (_) {
     // If Firebase is already initialized or options are pre-configured.
   }
-  debugPrint('[Notification] Handled background message: ${message.messageId}');
 }
 
 /// Service managing Push Notifications (FCM) and Local Notifications.
@@ -61,13 +59,13 @@ class NotificationService {
       // 5. Check if app was opened from a terminated state via a notification tap
       final initialMessage = await messaging.getInitialMessage();
       if (initialMessage != null) {
-        debugPrint('[Notification] App launched from terminated state via message: ${initialMessage.messageId}');
         _handleNotificationData(initialMessage.data);
       }
 
       debugPrint('[Notification] Initialized successfully');
     } catch (e, stack) {
-      debugPrint('[Notification] Initialization failed: $e\n$stack');
+      debugPrint('[Notification] Initialization failed.');
+      Error.throwWithStackTrace(e, stack);
     }
   }
 
@@ -104,18 +102,16 @@ class NotificationService {
       try {
         final apnsToken = await messaging.getAPNSToken();
         FCMTokenSingleton.instance.apnsToken = apnsToken;
-        debugPrint('[Notification] APNs Token: $apnsToken');
       } catch (e) {
-        debugPrint('[Notification] Failed to get APNs token: $e');
+        debugPrint('[Notification] Failed to get APNs token.');
       }
     }
 
     try {
       final fcmToken = await messaging.getToken();
       FCMTokenSingleton.instance.fcmToken = fcmToken;
-      debugPrint('[Notification] FCM Token: $fcmToken');
     } catch (e) {
-      debugPrint('[Notification] Failed to retrieve FCM token: $e');
+      debugPrint('[Notification] Failed to retrieve FCM token.');
     }
   }
 
@@ -126,13 +122,11 @@ class NotificationService {
 
     // Foreground message handler
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      debugPrint('[Notification] Received foreground message: ${message.messageId}');
       _showForegroundNotification(message);
     });
 
     // Background notification tap handler (app in background)
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      debugPrint('[Notification] Message clicked from background: ${message.messageId}');
       _handleNotificationData(message.data);
     });
   }
@@ -170,29 +164,24 @@ class NotificationService {
         final data = jsonDecode(response.payload!) as Map<String, dynamic>;
         _handleNotificationData(data);
       } catch (e) {
-        debugPrint('[Notification] Failed to parse local notification payload: $e');
+        debugPrint('[Notification] Failed to parse local notification payload.');
       }
     }
   }
 
   /// Dispatch notification data to custom callbacks or default router.
   static void _handleNotificationData(Map<String, dynamic> data) {
-    debugPrint('[Notification] Handling payload: $data');
     if (onNotificationTapped != null) {
       onNotificationTapped!(data);
       return;
     }
 
-    final route = data['route'] as String?;
-    if (route != null && route.isNotEmpty) {
-      AppRouter.navigatorKey.currentState?.pushNamed(route, arguments: data['arguments'] ?? data);
-    }
+
   }
 
   /// Listen for FCM token refreshes and notify subscribers.
   static void _setupTokenRefresh() {
     messaging.onTokenRefresh.listen((String token) async {
-      debugPrint('[Notification] FCM token refreshed: $token');
       FCMTokenSingleton.instance.fcmToken = token;
 
       if (!kIsWeb && Platform.isIOS) {
@@ -207,12 +196,10 @@ class NotificationService {
   /// Subscribe device to a topic.
   static Future<void> subscribeToTopic(String topic) async {
     await messaging.subscribeToTopic(topic);
-    debugPrint('[Notification] Subscribed to topic: $topic');
   }
 
   /// Unsubscribe device from a topic.
   static Future<void> unsubscribeFromTopic(String topic) async {
     await messaging.unsubscribeFromTopic(topic);
-    debugPrint('[Notification] Unsubscribed from topic: $topic');
   }
 }
